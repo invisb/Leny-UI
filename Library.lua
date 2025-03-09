@@ -1446,7 +1446,7 @@ function Library:createManager(options: table)
 		local jsons = {}
 		for _, file in ipairs(listfiles(options.folderName)) do
 			if not string.match(file, "Theme") and not string.match(file, "autoload") then
-				file = v:sub(#options.folderName + 2)
+				file = file:sub(#options.folderName + 2)
 				file = string.gsub(file, ".json", "")
 				table.insert(jsons, file)
 			end
