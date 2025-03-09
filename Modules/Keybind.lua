@@ -33,31 +33,33 @@ function Keybind:handleKeybind()
 	end)
 
 	local inputBegan = UserInputService.InputBegan:Connect(function(input, gameProcessedEvent)
-		if not gameProcessedEvent and input.UserInputType == Enum.UserInputType.Keyboard then
-			if changingBind and (not table.find(self.Exclusions, input.KeyCode.Name)) then
-				self.TextButton.Text = input.KeyCode.Name
-				table.insert(self.Exclusions, input.KeyCode.Name)
+		if not gameProcessedEvent and (input.UserInputType == Enum.UserInputType.Keyboard or input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.MouseButton2) then
+			local inputName = input.UserInputType == Enum.UserInputType.Keyboard and input.KeyCode.Name or input.UserInputType.Name
+			
+			if changingBind and (not table.find(self.Exclusions, inputName)) then
+				self.TextButton.Text = inputName
+				table.insert(self.Exclusions, inputName)
 				changingBind = false
 				self.Library.processedEvent = changingBind
 			end
 
-			if not changingBind and input.KeyCode.Name == self.TextButton.Text and not self.Library.processedEvent then
+			if not changingBind and inputName == self.TextButton.Text and not self.Library.processedEvent then
 				if self.onHeld then
 					self.onHeldDebounce = true
 
 					while self.onHeldDebounce do
-						self.callback(input.KeyCode.Name)
+						self.callback(inputName)
 						task.wait()
 					end
 				else
-					self.callback(input.KeyCode.Name)
+					self.callback(inputName)
 				end				
 			end
 		end
 	end)
 
-	local inputEnded = UserInputService.InputEnded:Connect(function(input, gameProccesedEvent)
-		if not gameProccesedEvent and input.UserInputType == Enum.UserInputType.Keyboard and self.onHeld and input.KeyCode.Name == self.TextButton.Text then
+	local inputEnded = UserInputService.InputEnded:Connect(function(input, gameProcessedEvent)
+		if not gameProcessedEvent and (input.UserInputType == Enum.UserInputType.Keyboard or input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.MouseButton2) and self.onHeld and (input.UserInputType == Enum.UserInputType.Keyboard and input.KeyCode.Name == self.TextButton.Text or input.UserInputType.Name == self.TextButton.Text) then
 			self.onHeldDebounce = false
 		end
 	end)
