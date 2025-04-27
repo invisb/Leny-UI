@@ -1695,7 +1695,7 @@ function Library:createManager(options: table)
 	SaveManager:createButton({text = "Save/Overwrite Config", callback = function()
 		local SavedData = getSavedData()
 		local encoded = game:GetService("HttpService"):JSONEncode(SavedData)
-		writefile(options.folderName .. "/" .. Configs:getValue()[1] .. ".json", encoded)
+		writefile(options.folderName .. "/" .. Configs:getValue() .. ".json", encoded)
 		Configs:updateList({list = getJsons(), default = {Configs:getValue()}})
 	end,})
 
