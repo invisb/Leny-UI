@@ -1,5 +1,6 @@
-local RunService = game:GetService("RunService")
-local UserInputService = game:GetService("UserInputService")
+local RunService = game:GetService('RunService')
+local TextService = game:GetService('TextService')
+local UserInputService = game:GetService('UserInputService')
 
 local ScreenGui = game:GetObjects("rbxassetid://99852798675591")[1]
 ScreenGui.Enabled = false
@@ -466,7 +467,6 @@ function Library:createSubTab(options: table)
 	SubTab.TextColor3 = Theme.SecondaryTextColor
 	SubTab.Parent = ScrollingFrame
 
-	local TextService = game:GetService("TextService")
 	SubTab.Size = UDim2.new(0, TextService:GetTextSize(options.text, 15, Enum.Font.MontserratMedium, SubTab.AbsoluteSize).X, 1, 0)
 
 	-- Calculate subTab position to position underline
@@ -1695,7 +1695,7 @@ function Library:createManager(options: table)
 	SaveManager:createButton({text = "Save/Overwrite Config", callback = function()
 		local SavedData = getSavedData()
 		local encoded = game:GetService("HttpService"):JSONEncode(SavedData)
-		writefile(options.folderName .. "/" .. Configs:getValue() .. ".json", encoded)
+		writefile(options.folderName .. "/" .. Configs:getValue()[1] .. ".json", encoded)
 		Configs:updateList({list = getJsons(), default = {Configs:getValue()}})
 	end,})
 
