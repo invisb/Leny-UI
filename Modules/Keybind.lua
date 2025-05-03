@@ -14,8 +14,8 @@ function Keybind.new(context: table)
 end
 
 function Keybind:handleKeybind()
-	local UserInputService = game:GetService("UserInputService")
-	local RunService = game:GetService("RunService")
+local RunService = game:GetService('RunService')
+local UserInputService = game:GetService('UserInputService')
 
 	local changingBind = false
 
@@ -32,8 +32,8 @@ function Keybind:handleKeybind()
 		self.TextButton.Text = "Changing..."
 	end)
 
-	local inputBegan = UserInputService.InputBegan:Connect(function(input, gameProcessedEvent)
-		if not gameProcessedEvent and (input.UserInputType == Enum.UserInputType.Keyboard or input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.MouseButton2) then
+	local inputBegan = UserInputService.InputBegan:Connect(function(input)
+		if (input.UserInputType == Enum.UserInputType.Keyboard or input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.MouseButton2) then
 			local inputName = input.UserInputType == Enum.UserInputType.Keyboard and input.KeyCode.Name or input.UserInputType.Name
 			
 			if changingBind and (not table.find(self.Exclusions, inputName)) then
