@@ -1157,17 +1157,18 @@ function Library:createKeybind(options: table, parent, scrollingFrame)
 	local Background = TextLabel.Background
 	
 	local TextButton = Background.TextButton
-	
-	if not table.find(self.Exclusions, options.default) then
-		TextButton.Text = options.default
-	else
-		TextButton.Text = "None"
-		warn("You already have this key binded")
-	end
 
-	if options.default ~= "None" then
-		table.insert(Exclusions, options.default)
-	end
+	TextButton.Text = options.default
+	-- if not table.find(self.Exclusions, options.default) then
+	-- 	TextButton.Text = options.default
+	-- else
+	-- 	TextButton.Text = "None"
+	-- 	warn("You already have this key binded")
+	-- end
+
+	-- if options.default ~= "None" then
+	-- 	table.insert(Exclusions, options.default)
+	-- end
 
 	local Context = Utility:validateContext({
 		default = {Value = options.default, ExpectedType = "string"},
