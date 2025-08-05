@@ -1792,13 +1792,10 @@ function Library:createManager(options: table)
 		for elementType, elementData in pairs(shared.Flags) do
 			for elementName, _ in pairs(elementData) do
 				if elementType == "Dropdown" and decoded.Dropdown[elementName] and elementName ~= "Configs" then
-					warn("Updating dropdown", elementName, elementData)
 					shared.Flags.Dropdown[elementName]:updateList({
 						list = decoded.Dropdown[elementName].list,
 						default = decoded.Dropdown[elementName].value,
 					})
-				elseif elementType == "Dropdown" then
-					warn("Failed to update Dropdown", elementName, elementData)
 				end
 
 				if elementType == "Toggle" and decoded.Toggle[elementName] then
