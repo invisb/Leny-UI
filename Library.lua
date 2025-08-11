@@ -201,6 +201,12 @@ Glow:GetPropertyChangedSignal("AbsoluteSize"):Connect(function()
 end)
 
 function Library.new(options)
+	if getgenv().oldLibrary then
+		getgenv().oldLibrary:destroy()
+	end
+
+	getgenv().oldLibrary = Library
+
 	Utility:validateOptions(options, {
 		sizeX = { Default = Library.sizeX, ExpectedType = "number" },
 		sizeY = { Default = Library.sizeY, ExpectedType = "number" },
