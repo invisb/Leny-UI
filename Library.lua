@@ -1667,6 +1667,14 @@ function Library:notify(options: table)
 	})
 end
 
+function Library:ToggleUI(state)
+    if typeof(state) == "boolean" then
+        ScreenGui.Enabled = state
+    else
+        ScreenGui.Enabled = not ScreenGui.Enabled
+    end
+end
+
 -- Save Manager, Theme Manager, UI settings
 function Library:createManager(options: table)
 	Utility:validateOptions(options, {
@@ -1990,6 +1998,18 @@ function Library:createManager(options: table)
 		text = "Load Config",
 		callback = function()
 			loadSaveConfig(Configs:getValue())
+		end,
+	})
+
+	SaveManager:createButton({
+	text = "Delete Saved Config",
+		callback = function()
+			local configToDelete = Configs:getValue()
+			local filePath = options.folderName .. "/" .. configToDelete .. ".json"
+			if isfile and delfile and isfile(filePath) then
+				delfile(filePath)
+				Configs:updateList({ list = getJsons(), default = {} })
+			end
 		end,
 	})
 
