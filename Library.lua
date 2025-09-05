@@ -133,7 +133,7 @@ local Line = Filler.Line
 local Title = Tabs.Frame.Title
 
 if not LPH_OBFUSCATED then
-	LRM_ScriptName = LRM_ScriptName or "dev"
+	LRM_ScriptName = LRM_ScriptName or "Mainfile Maxhub Free"
 end
 
 if LRM_ScriptName == "Mainfile Maxhub Free" then
@@ -251,29 +251,23 @@ function Library.new(options)
 
 	ScreenGui.Enabled = true
 	
-	-- Store rainbow animation connection for cleanup
 	local rainbowConnection = nil
 	
-	-- Function to create natural hue cycling effect
 	local function createNaturalRainbowEffect(titleIcon)
-		-- Clean up existing connection
 		if rainbowConnection then
 			rainbowConnection:Disconnect()
 			rainbowConnection = nil
 		end
 		
-		-- Get the original color to maintain saturation and value
 		local originalColor = Library.Theme.PrimaryTextColor
-		local h, s, v = originalColor:ToHSV()
+		local s, v = originalColor:ToHSV()
 		
-		-- Store original saturation and value for natural cycling
-		local originalSaturation = math.max(s, 0.8) -- Ensure minimum saturation for vibrant colors
-		local originalValue = math.max(v, 0.9) -- Ensure brightness
+		local originalSaturation = math.max(s, 0.8)
+		local originalValue = math.max(v, 0.9)
 		
 		local startTime = tick()
-		local cycleDuration = 4 -- 4 seconds for full hue cycle
+		local cycleDuration = 4
 		
-		-- Create the smooth hue cycling connection
 		rainbowConnection = game:GetService("RunService").Heartbeat:Connect(function()
 			local elapsed = tick() - startTime
 			local progress = (elapsed % cycleDuration) / cycleDuration
@@ -286,7 +280,6 @@ function Library.new(options)
 			titleIcon.ImageColor3 = newColor
 		end)
 		
-		-- Store connection for cleanup
 		table.insert(Connections, {
 			Disconnect = function()
 				if rainbowConnection then
@@ -297,7 +290,6 @@ function Library.new(options)
 		})
 	end
 	
-	-- Function to stop rainbow effect and restore original color
 	local function stopRainbowEffect(titleIcon)
 		if rainbowConnection then
 			rainbowConnection:Disconnect()
@@ -313,22 +305,21 @@ function Library.new(options)
 		})
 	end
 	
-	-- Handle title and icon setup
+	-- icon setup
 	if UserIsPoor then
 		Title.Text = options.title
 		if Title:FindFirstChild("TitleIcon") then
 			Title.TitleIcon.Visible = false
 		end
 	else
-		-- Create or update the icon
 		local TitleIcon = Title:FindFirstChild("TitleIcon")
 		if not TitleIcon then
 			TitleIcon = Instance.new("ImageLabel")
 			TitleIcon.Name = "TitleIcon"
 			TitleIcon.Parent = Title
 			TitleIcon.BackgroundTransparency = 1
-			TitleIcon.Size = UDim2.new(0, 75, 0, 75)
-			TitleIcon.Position = UDim2.new(0, -20, 0.5, 0)
+			TitleIcon.Size = UDim2.new(0, 51, 0, 51)
+			TitleIcon.Position = UDim2.new(0, -9, 0.5, 0)
 			TitleIcon.AnchorPoint = Vector2.new(0, 0.5)
 			TitleIcon.ScaleType = Enum.ScaleType.Fit
 		end
@@ -336,14 +327,11 @@ function Library.new(options)
 		TitleIcon.Image = options.iconTitle
 		TitleIcon.Visible = true
 		
-		-- Set the title text with proper spacing for the icon
 		Title.Text = "       " .. options.title
 		
-		-- Apply rainbow effect if enabled
 		if options.rainbowIcon then
 			createNaturalRainbowEffect(TitleIcon)
 		else
-			-- Ensure no rainbow effect and use theme color
 			stopRainbowEffect(TitleIcon)
 		end
 	end
@@ -2280,3 +2268,5 @@ task.spawn(function()
 		end
 	end
 end)
+
+return Library
