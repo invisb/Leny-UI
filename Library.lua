@@ -134,7 +134,7 @@ local Line = Filler.Line
 local Title = Tabs.Frame.Title
 
 if not LPH_OBFUSCATED then
-	LRM_ScriptName = LRM_ScriptName or "Mainfile Maxhub Free"
+	LRM_ScriptName = LRM_ScriptName or "dev"
 end
 
 if LRM_ScriptName == "Mainfile Maxhub Free" then
