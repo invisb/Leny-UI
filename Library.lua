@@ -224,7 +224,7 @@ function Library.new(options)
 		sizeY = { Default = Library.sizeY, ExpectedType = "number" },
 		tabSizeX = { Default = Library.tabSizeX, ExpectedType = "number" },
 		title = { Default = "Leny", ExpectedType = "string" },
-		iconTitle = { Default = "rbxassetid://70386959506815", ExpectedType = "string" },
+		iconTitle = { Default = "rbxassetid://110774279816088", ExpectedType = "string" },
 		rainbowIcon = { Default = false, ExpectedType = "boolean" },
 		PrimaryBackgroundColor = { Default = Library.Theme.PrimaryBackgroundColor, ExpectedType = "Color3" },
 		SecondaryBackgroundColor = { Default = Library.Theme.SecondaryBackgroundColor, ExpectedType = "Color3" },
@@ -324,18 +324,18 @@ function Library.new(options)
 			TitleIcon.AnchorPoint = Vector2.new(0, 0.5)
 			TitleIcon.ScaleType = Enum.ScaleType.Fit
 		end
-		
+
 		TitleIcon.Image = options.iconTitle
 		TitleIcon.Visible = true
-		
 		Title.Text = "       " .. options.title
-		
+
 		if options.rainbowIcon then
 			createNaturalRainbowEffect(TitleIcon)
 		else
 			stopRainbowEffect(TitleIcon)
 		end
 	end
+
 	
 	Glow.Size = UDim2.fromOffset(options.sizeX, options.sizeY)
 end
@@ -2000,20 +2000,15 @@ function Library:createManager(options: table)
 		})
 	end
 
-	function stopRainbowEffect(titleIcon)
+	local function stopRainbowEffect(titleIcon)
 		if rainbowConnection then
 			rainbowConnection:Disconnect()
 			rainbowConnection = nil
 		end
-		
-		-- Restore original theme color
-		titleIcon.ImageColor3 = Library.Theme.PrimaryTextColor
-		
-		-- Re-register to theme system
-		Theme:registerToObjects({
-			{ object = titleIcon, property = "ImageColor3", theme = { "PrimaryTextColor" } },
-		})
+		local h,s,v = Library.Theme.PrimaryTextColor:ToHSV()
+		titleIcon.ImageColor3 = Color3.fromHSV(h, s, math.min(1, v + 0.3))
 	end
+
 
 	-- Updated toggle for the rainbow icon effect
 	UI:createToggle({
