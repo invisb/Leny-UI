@@ -1,3 +1,4 @@
+--!nocheck
 local TESTING = false
 
 local RunService = game:GetService("RunService")
@@ -131,6 +132,16 @@ local Resize = Filler.Resize
 local Line = Filler.Line
 local Title = Tabs.Frame.Title
 
+if not LPH_OBFUSCATED then
+	LRM_ScriptName = LRM_ScriptName or "dev"
+end
+
+if LRM_ScriptName == "Mainfile Maxhub Free" then
+	UserIsPoor = true
+else
+	UserIsPoor = false
+end
+
 -- Tab resizing stuff
 local tabResizing = false
 Resize.MouseButton1Down:Connect(function()
@@ -212,6 +223,8 @@ function Library.new(options)
 		sizeY = { Default = Library.sizeY, ExpectedType = "number" },
 		tabSizeX = { Default = Library.tabSizeX, ExpectedType = "number" },
 		title = { Default = "Leny", ExpectedType = "string" },
+		iconTitle = { Default = "rbxassetid://80896949437321", ExpectedType = "string" },
+		rainbowIcon = { Default = false, ExpectedType = "boolean" },
 		PrimaryBackgroundColor = { Default = Library.Theme.PrimaryBackgroundColor, ExpectedType = "Color3" },
 		SecondaryBackgroundColor = { Default = Library.Theme.SecondaryBackgroundColor, ExpectedType = "Color3" },
 		TertiaryBackgroundColor = { Default = Library.Theme.TertiaryBackgroundColor, ExpectedType = "Color3" },
@@ -228,7 +241,7 @@ function Library.new(options)
 	Library.sizeY = options.sizeY
 	Library.Theme.PrimaryBackgroundColor = options.PrimaryBackgroundColor
 	Library.Theme.SecondaryBackgroundColor = options.SecondaryBackgroundColor
-	Library.Theme.TertiaryBackgroundColor = options.TertiaryBackgroundColor -- new
+	Library.Theme.TertiaryBackgroundColor = options.TertiaryBackgroundColor
 	Library.Theme.TabBackgroundColor = options.TabBackgroundColor
 	Library.Theme.PrimaryTextColor = options.PrimaryTextColor
 	Library.Theme.SecondaryTextColor = options.SecondaryTextColor
@@ -237,9 +250,107 @@ function Library.new(options)
 	Library.Theme.Line = options.Line
 
 	ScreenGui.Enabled = true
-	Title.Text = options.title
+	
+	-- Store rainbow animation connection for cleanup
+	local rainbowConnection = nil
+	
+	-- Function to create natural hue cycling effect
+	local function createNaturalRainbowEffect(titleIcon)
+		-- Clean up existing connection
+		if rainbowConnection then
+			rainbowConnection:Disconnect()
+			rainbowConnection = nil
+		end
+		
+		-- Get the original color to maintain saturation and value
+		local originalColor = Library.Theme.PrimaryTextColor
+		local h, s, v = originalColor:ToHSV()
+		
+		-- Store original saturation and value for natural cycling
+		local originalSaturation = math.max(s, 0.8) -- Ensure minimum saturation for vibrant colors
+		local originalValue = math.max(v, 0.9) -- Ensure brightness
+		
+		local startTime = tick()
+		local cycleDuration = 4 -- 4 seconds for full hue cycle
+		
+		-- Create the smooth hue cycling connection
+		rainbowConnection = game:GetService("RunService").Heartbeat:Connect(function()
+			local elapsed = tick() - startTime
+			local progress = (elapsed % cycleDuration) / cycleDuration
+			
+			-- Smooth hue cycling from 0 to 1 (full spectrum)
+			local currentHue = progress
+			
+			-- Create color with cycled hue but original saturation/value
+			local newColor = Color3.fromHSV(currentHue, originalSaturation, originalValue)
+			titleIcon.ImageColor3 = newColor
+		end)
+		
+		-- Store connection for cleanup
+		table.insert(Connections, {
+			Disconnect = function()
+				if rainbowConnection then
+					rainbowConnection:Disconnect()
+					rainbowConnection = nil
+				end
+			end
+		})
+	end
+	
+	-- Function to stop rainbow effect and restore original color
+	local function stopRainbowEffect(titleIcon)
+		if rainbowConnection then
+			rainbowConnection:Disconnect()
+			rainbowConnection = nil
+		end
+		
+		-- Restore original theme color
+		titleIcon.ImageColor3 = Library.Theme.PrimaryTextColor
+		
+		-- Re-register to theme system
+		Theme:registerToObjects({
+			{ object = titleIcon, property = "ImageColor3", theme = { "PrimaryTextColor" } },
+		})
+	end
+	
+	-- Handle title and icon setup
+	if UserIsPoor then
+		Title.Text = options.title
+		if Title:FindFirstChild("TitleIcon") then
+			Title.TitleIcon.Visible = false
+		end
+	else
+		-- Create or update the icon
+		local TitleIcon = Title:FindFirstChild("TitleIcon")
+		if not TitleIcon then
+			TitleIcon = Instance.new("ImageLabel")
+			TitleIcon.Name = "TitleIcon"
+			TitleIcon.Parent = Title
+			TitleIcon.BackgroundTransparency = 1
+			TitleIcon.Size = UDim2.new(0, 75, 0, 75)
+			TitleIcon.Position = UDim2.new(0, -20, 0.5, 0)
+			TitleIcon.AnchorPoint = Vector2.new(0, 0.5)
+			TitleIcon.ScaleType = Enum.ScaleType.Fit
+		end
+		
+		TitleIcon.Image = options.iconTitle
+		TitleIcon.Visible = true
+		
+		-- Set the title text with proper spacing for the icon
+		Title.Text = "       " .. options.title
+		
+		-- Apply rainbow effect if enabled
+		if options.rainbowIcon then
+			createNaturalRainbowEffect(TitleIcon)
+		else
+			-- Ensure no rainbow effect and use theme color
+			stopRainbowEffect(TitleIcon)
+		end
+	end
+	
 	Glow.Size = UDim2.fromOffset(options.sizeX, options.sizeY)
 end
+
 
 function Library:createAddons(text, imageButton, scrollingFrame, additionalAddons)
 	local Addon = Assets.Elements.Addons:Clone()
@@ -339,7 +450,7 @@ end
 
 function Library:destroy()
 	for _, rbxSignals in ipairs(Connections) do
-		rbxSignals:disconnect()
+		rbxSignals:Disconnect() -- Changed from disconnect() to Disconnect()
 	end
 	task.wait(0.1)
 	ScreenGui:Destroy()
@@ -1858,7 +1969,81 @@ function Library:createManager(options: table)
 	local SaveManager = Page:createSection({ position = "Right", text = "Save Manager" })
 	local ThemeManager = Page:createSection({ position = "Right", text = "Theme Manager" })
 
-	-- Create color pickers to change UI color
+	function createNaturalRainbowEffect(titleIcon)
+		-- Clean up existing connection
+		if rainbowConnection then
+			rainbowConnection:Disconnect()
+			rainbowConnection = nil
+		end
+		
+		-- Get the original color to maintain saturation and value
+		local originalColor = Library.Theme.PrimaryTextColor
+		local h, s, v = originalColor:ToHSV()
+		
+		-- Store original saturation and value for natural cycling
+		local originalSaturation = math.max(s, 0.8) -- Ensure minimum saturation for vibrant colors
+		local originalValue = math.max(v, 0.9) -- Ensure brightness
+		
+		local startTime = tick()
+		local cycleDuration = 4 -- 4 seconds for full hue cycle
+		
+		-- Create the smooth hue cycling connection
+		rainbowConnection = game:GetService("RunService").Heartbeat:Connect(function()
+			local elapsed = tick() - startTime
+			local progress = (elapsed % cycleDuration) / cycleDuration
+			
+			-- Smooth hue cycling from 0 to 1 (full spectrum)
+			local currentHue = progress
+			
+			-- Create color with cycled hue but original saturation/value
+			local newColor = Color3.fromHSV(currentHue, originalSaturation, originalValue)
+			titleIcon.ImageColor3 = newColor
+		end)
+		
+		-- Store connection for cleanup
+		table.insert(Connections, {
+			Disconnect = function()
+				if rainbowConnection then
+					rainbowConnection:Disconnect()
+					rainbowConnection = nil
+				end
+			end
+		})
+	end
+
+	function stopRainbowEffect(titleIcon)
+		if rainbowConnection then
+			rainbowConnection:Disconnect()
+			rainbowConnection = nil
+		end
+		
+		-- Restore original theme color
+		titleIcon.ImageColor3 = Library.Theme.PrimaryTextColor
+		
+		-- Re-register to theme system
+		Theme:registerToObjects({
+			{ object = titleIcon, property = "ImageColor3", theme = { "PrimaryTextColor" } },
+		})
+	end
+
+	-- Updated toggle for the rainbow icon effect
+	UI:createToggle({
+		text = "Rainbow Icon",
+		state = false,
+		callback = function(state)
+			local TitleIcon = Title:FindFirstChild("TitleIcon")
+			if TitleIcon then
+				if state then
+					-- Enable natural rainbow hue cycling effect
+					createNaturalRainbowEffect(TitleIcon)
+				else
+					-- Disable rainbow effect and restore theme color
+					stopRainbowEffect(TitleIcon)
+				end
+			end
+		end,
+	})
+
 	UI:createPicker({
 		text = "SecondaryTextColor",
 		default = Theme.SecondaryTextColor,
@@ -2095,5 +2280,3 @@ task.spawn(function()
 		end
 	end
 end)
-
-return Library
