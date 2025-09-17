@@ -298,12 +298,7 @@ function Library.new(options)
 	end
 	
 	-- icon setup
-	if options.loadIcon == false then
-		Title.Text = options.title
-		if Title:FindFirstChild("TitleIcon") then
-			Title.TitleIcon.Visible = false
-		end
-	else
+	if options.loadIcon then
 		local TitleIcon = Title:FindFirstChild("TitleIcon")
 		if not TitleIcon then
 			TitleIcon = Instance.new("ImageLabel")
@@ -324,6 +319,11 @@ function Library.new(options)
 			createNaturalRainbowEffect(TitleIcon)
 		else
 			stopRainbowEffect(TitleIcon)
+		end
+	else
+		Title.Text = options.title
+		if Title:FindFirstChild("TitleIcon") then
+			Title.TitleIcon.Visible = false
 		end
 	end
 
