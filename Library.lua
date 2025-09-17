@@ -214,7 +214,6 @@ function Library.new(options)
 		sizeY = { Default = Library.sizeY, ExpectedType = "number" },
 		tabSizeX = { Default = Library.tabSizeX, ExpectedType = "number" },
 		title = { Default = "Leny", ExpectedType = "string" },
-		loadIcon = { Default = true, ExpectedType = "boolean" },
 		iconTitle = { Default = "rbxassetid://110774279816088", ExpectedType = "string" },
 		rainbowIcon = { Default = false, ExpectedType = "boolean" },
 		PrimaryBackgroundColor = { Default = Library.Theme.PrimaryBackgroundColor, ExpectedType = "Color3" },
@@ -296,29 +295,6 @@ function Library.new(options)
 			{ object = titleIcon, property = "ImageColor3", theme = { "PrimaryTextColor" } },
 		})
 	end
-	
-
-		local TitleIcon = Title:FindFirstChild("TitleIcon")
-		if not TitleIcon then
-			TitleIcon = Instance.new("ImageLabel")
-			TitleIcon.Name = "TitleIcon"
-			TitleIcon.Parent = Title
-			TitleIcon.BackgroundTransparency = 1
-			TitleIcon.Size = UDim2.new(0, 51, 0, 51)
-			TitleIcon.Position = UDim2.new(0, -9, 0.5, 0)
-			TitleIcon.AnchorPoint = Vector2.new(0, 0.5)
-			TitleIcon.ScaleType = Enum.ScaleType.Fit
-		end
-
-		TitleIcon.Image = options.iconTitle
-		TitleIcon.Visible = true
-		Title.Text = "       " .. options.title
-
-		if options.rainbowIcon then
-			createNaturalRainbowEffect(TitleIcon)
-		else
-			stopRainbowEffect(TitleIcon)
-		end
 
 	
 	Glow.Size = UDim2.fromOffset(options.sizeX, options.sizeY)
