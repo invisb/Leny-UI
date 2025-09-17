@@ -214,6 +214,7 @@ function Library.new(options)
 		sizeY = { Default = Library.sizeY, ExpectedType = "number" },
 		tabSizeX = { Default = Library.tabSizeX, ExpectedType = "number" },
 		title = { Default = "Leny", ExpectedType = "string" },
+		loadIcon = { Default = true, ExpectedType = "boolean" },
 		iconTitle = { Default = "rbxassetid://110774279816088", ExpectedType = "string" },
 		rainbowIcon = { Default = false, ExpectedType = "boolean" },
 		PrimaryBackgroundColor = { Default = Library.Theme.PrimaryBackgroundColor, ExpectedType = "Color3" },
