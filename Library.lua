@@ -134,7 +134,7 @@ local Line = Filler.Line
 local Title = Tabs.Frame.Title
 
 if not LPH_OBFUSCATED then
-	LRM_ScriptName = LRM_ScriptName or "Mainfile Maxhub Free"
+	LRM_ScriptName = LRM_ScriptName or "dev"
 end
 
 if LRM_ScriptName == "Mainfile Maxhub Free" then
@@ -142,6 +142,9 @@ if LRM_ScriptName == "Mainfile Maxhub Free" then
 else
 	UserIsPoor = false
 end
+
+print("Is user poor? " .. tostring(UserIsPoor))
+print("script loaded:  " .. tostring(LRM_ScriptName))
 
 -- Tab resizing stuff
 local tabResizing = false
