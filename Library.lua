@@ -139,8 +139,8 @@ else
 	UserIsPoor = false
 end
 
-print("Is user poor? " .. tostring(UserIsPoor))
-print("script loaded:  " .. tostring(LRM_ScriptName))
+print("UI CHECK: Is user poor? " .. tostring(UserIsPoor))
+print("UI CHECK: script name loaded:  " .. tostring(LRM_ScriptName))
 
 -- Tab resizing stuff
 local tabResizing = false
