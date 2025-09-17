@@ -133,15 +133,6 @@ local Resize = Filler.Resize
 local Line = Filler.Line
 local Title = Tabs.Frame.Title
 
-if LRM_ScriptName == "Mainfile Maxhub Free" then
-	UserIsPoor = true
-else
-	UserIsPoor = false
-end
-
-print("UI CHECK: Is user poor? " .. tostring(UserIsPoor))
-print("UI CHECK: script name loaded:  " .. tostring(LRM_ScriptName))
-
 -- Tab resizing stuff
 local tabResizing = false
 Resize.MouseButton1Down:Connect(function()
@@ -305,13 +296,7 @@ function Library.new(options)
 		})
 	end
 	
-	-- icon setup
-	if UserIsPoor then
-		Title.Text = options.title
-		if Title:FindFirstChild("TitleIcon") then
-			Title.TitleIcon.Visible = false
-		end
-	else
+
 		local TitleIcon = Title:FindFirstChild("TitleIcon")
 		if not TitleIcon then
 			TitleIcon = Instance.new("ImageLabel")
@@ -333,7 +318,6 @@ function Library.new(options)
 		else
 			stopRainbowEffect(TitleIcon)
 		end
-	end
 
 	
 	Glow.Size = UDim2.fromOffset(options.sizeX, options.sizeY)
