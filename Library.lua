@@ -213,6 +213,7 @@ function Library.new(options)
 		sizeX = { Default = Library.sizeX, ExpectedType = "number" },
 		sizeY = { Default = Library.sizeY, ExpectedType = "number" },
 		tabSizeX = { Default = Library.tabSizeX, ExpectedType = "number" },
+		loadIcon = { Default = false, ExpectedType = "boolean" },
 		title = { Default = "Leny", ExpectedType = "string" },
 		iconTitle = { Default = "rbxassetid://110774279816088", ExpectedType = "string" },
 		rainbowIcon = { Default = false, ExpectedType = "boolean" },
@@ -294,6 +295,36 @@ function Library.new(options)
 		Theme:registerToObjects({
 			{ object = titleIcon, property = "ImageColor3", theme = { "PrimaryTextColor" } },
 		})
+	end
+	
+	-- icon setup
+	if options.loadIcon == false then
+		Title.Text = options.title
+		if Title:FindFirstChild("TitleIcon") then
+			Title.TitleIcon.Visible = false
+		end
+	else
+		local TitleIcon = Title:FindFirstChild("TitleIcon")
+		if not TitleIcon then
+			TitleIcon = Instance.new("ImageLabel")
+			TitleIcon.Name = "TitleIcon"
+			TitleIcon.Parent = Title
+			TitleIcon.BackgroundTransparency = 1
+			TitleIcon.Size = UDim2.new(0, 51, 0, 51)
+			TitleIcon.Position = UDim2.new(0, -9, 0.5, 0)
+			TitleIcon.AnchorPoint = Vector2.new(0, 0.5)
+			TitleIcon.ScaleType = Enum.ScaleType.Fit
+		end
+
+		TitleIcon.Image = options.iconTitle
+		TitleIcon.Visible = true
+		Title.Text = "       " .. options.title
+
+		if options.rainbowIcon then
+			createNaturalRainbowEffect(TitleIcon)
+		else
+			stopRainbowEffect(TitleIcon)
+		end
 	end
 
 	
@@ -1970,7 +2001,6 @@ function Library:createManager(options: table)
 	end
 
 
-	-- Updated toggle for the rainbow icon effect
 	UI:createToggle({
 		text = "Rainbow Icon",
 		state = false,
